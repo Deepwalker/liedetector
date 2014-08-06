@@ -27,7 +27,7 @@ GEM
       rspec-support (~> 3.0.0)
     rspec-support (3.0.3)
     thread_safe (0.3.4)
-    trafaret (1.5.7)
+    trafaret (1.5.9)
       activesupport
     tzinfo (1.2.1)
       thread_safe (~> 0.1)

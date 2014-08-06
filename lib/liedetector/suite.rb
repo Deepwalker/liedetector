@@ -3,6 +3,8 @@ module LieDetector
     HEADERS_DEFAULTS = {'Accept' => 'application/json'}
     HTTP_DEFAULTS = {host: '127.0.0.1', port: 3000}
 
+    attr_accessor :http_defaults
+
     def headers_defaults
       HEADERS_DEFAULTS
     end
