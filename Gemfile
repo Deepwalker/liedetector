@@ -4,3 +4,5 @@ gem 'trafaret'
 gem 'httpclient'
 gem 'oj'
 gem 'redcarpet'
+
+gem 'rspec'

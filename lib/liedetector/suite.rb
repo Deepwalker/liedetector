@@ -3,6 +3,14 @@ module LieDetector
     HEADERS_DEFAULTS = {'Accept' => 'application/json'}
     HTTP_DEFAULTS = {host: '127.0.0.1', port: 3000}
 
+    def headers_defaults
+      HEADERS_DEFAULTS
+    end
+
+    def initialize(filepath)
+      @filepath = filepath
+    end
+
     def build_uri(path, query: nil, fragment: nil)
       query = URI.encode_www_form(query) if query.is_a? Hash
       URI::HTTP.build(HTTP_DEFAULTS.merge(path: path, query: query, fragment: fragment)).to_s
@@ -42,9 +50,9 @@ module LieDetector
 
     attr_reader :store
 
-    def start
-      markdown = Redcarpet::Markdown.new(WithCodeExec.new(self), fenced_code_blocks: true)
-      markdown.render(File.new('sample.md').read)
+    def run
+      markdown = Redcarpet::Markdown.new(LieDetector::MarkdownRunner.new(self), fenced_code_blocks: true)
+      markdown.render(File.new(@filepath).read)
 
       @ordered.each do |test|
         puts test.describe
@@ -54,14 +62,17 @@ module LieDetector
       end
     end
 
+    def code_block(code)
+      self.instance_eval(code, @filepath)
+    end
+
     # Sugar to not define classes in the doc
     def request(name, method, path, &blk)
-      cls = Class.new(Request)
-      cls.method method
-      cls.path path
-      cls.class_exec &blk
-      Object.const_set(name.to_s.camelize, cls) if name
-      Suite.register(cls, name)
+      req = LieDetector::Request.new self
+      req.method method
+      req.path path
+      req.instance_exec &blk
+      register(req, name)
     end
   end
 end

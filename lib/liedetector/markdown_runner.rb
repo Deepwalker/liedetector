@@ -2,10 +2,11 @@ module LieDetector
   class MarkdownRunner < Redcarpet::Render::Base
     def initialize(suite)
       @suite = suite
+      super()
     end
 
     def block_code(code, language)
-      @suite.eval(code)
+      @suite.code_block(code)
       nil
     end
 

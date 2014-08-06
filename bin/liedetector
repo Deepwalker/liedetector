@@ -1,0 +1,7 @@
+#! /usr/bin/env ruby
+
+require 'liedetector'
+
+
+suite = LieDetector::Suite.new(ARGV[0])
+suite.run
