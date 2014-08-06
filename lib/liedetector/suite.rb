@@ -1,21 +1,23 @@
 module LieDetector
   class Suite
-    HEADERS_DEFAULTS = {'Accept' => 'application/json'}
-    HTTP_DEFAULTS = {host: '127.0.0.1', port: 3000}
-
-    attr_accessor :http_defaults
-
-    def headers_defaults
-      HEADERS_DEFAULTS
-    end
+    attr_accessor :http_defaults, :headers_defaults
 
     def initialize(filepath)
       @filepath = filepath
+      self.headers_defaults = {'Accept' => 'application/json'}
+      self.http_defaults = {host: '127.0.0.1', port: 3000}
     end
 
     def build_uri(path, query: nil, fragment: nil)
       query = URI.encode_www_form(query) if query.is_a? Hash
-      URI::HTTP.build(HTTP_DEFAULTS.merge(path: path, query: query, fragment: fragment)).to_s
+      scheme = http_defaults[:scheme] || 'http'
+      if scheme == 'http'
+        URI::HTTP
+      elsif scheme == 'https'
+        URI::HTTPS
+      else
+        raise 'Bad configuration'
+      end.build(http_defaults.merge(path: path, query: query, fragment: fragment)).to_s
     end
 
     def session
