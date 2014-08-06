@@ -24,13 +24,23 @@ With Trafaret library we can define data types to check API results:
       name: :string,
       full_name: :string,
       # ... hundred of other fields, tired to define them
-      owner: {} # actually user info, but need not now
+      owner: {url: :uri}
     })
 
-So now we can get info about liedetector repo, store it, and then use it for next requests:
+So now we can get info about liedetector repo, store it, and then use it for next queries:
 
     request :repo_info, :get, '/repos/Deepwalker/liedetector' do
       status 200
       await Repo
       store :repo # we store API call result for later
     end
+
+Now we have repo info, and URI for it owner. Lets check this URI:
+
+    request :repo_owner, :get, proc { URI.parse(store[:repo][:owner][:url]).path } do
+      status 200
+      await :any
+    end
+
+You can put proc {} in place of method, path, status, data, query and headers request args. As you see
+request get name, method and path, and then with block you fill other parameters.
