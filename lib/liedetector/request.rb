@@ -35,10 +35,8 @@ module LieDetector
       res = @suite.session.send(
         get_method,
         @suite.build_uri(get_path, query: get_query),
-        {
-          data: get_data,
-          header: @suite.headers_defaults.merge(get_headers || {})
-        }
+        get_data,
+        @suite.headers_defaults.merge(get_headers || {})
       )
       unless res.status == get_status
         raise "Bad status(#{get_status} != #{res.status}): #{res.inspect}"
